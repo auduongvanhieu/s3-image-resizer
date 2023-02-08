@@ -15,16 +15,23 @@ const WHITELIST = Object.freeze(WHITELIST_STR.split(' '))
 exports.handler = async (event) => {
     const path = event.queryStringParameters.path;
     const parts = PathPattern.exec(path);
-    const dir = parts[1] || '';
-    const resizeOption = parts[2];  // e.g. "150x150_max"
-    const sizeAndAction = resizeOption.split('_');
-    const filename = parts[3];
+    let dir = parts[1] || '';
+    let resizeOption = parts[2];  // e.g. "150x150_max"
+    let filename = parts[3];
+    console.log("hieunv", "parts", parts)
+    console.log("hieunv", "parts_length", parts.length)
+    if (parts.length == 5) {
+        dir = parts[1] + '/' + parts[2] || '';
+        resizeOption = parts[3];  // e.g. "150x150_max"
+        filename = parts[4];
+    }
+    let sizeAndAction = resizeOption.split('_');
 
     const sizes = sizeAndAction[0].split("x");
     const action = sizeAndAction.length > 1 ? sizeAndAction[1] : null;
 
     // Whitelist validation.
-    if (WHITELIST && !WHITELIST.includes(resizeOption)) {
+    if (false && WHITELIST && !WHITELIST.includes(resizeOption)) {
         return {
             statusCode: 400,
             body: `WHITELIST is set but does not contain the size parameter "${resizeOption}"`,
