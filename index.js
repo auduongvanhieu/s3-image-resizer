@@ -1,16 +1,13 @@
 'use strict'
 
-
 const AWS = require('aws-sdk');
 const S3 = new AWS.S3({ signatureVersion: 'v4' });
 const Sharp = require('sharp');
 const PathPattern = /(.*\/)?(.*)\/(.*)/;
 
 // parameters
-const BUCKET = "lifeon-v2"
-const URL = "http://lifeon-v2.s3-website-ap-southeast-1.amazonaws.com"
-const WHITELIST_STR = "1000x1000 1000xAUTO 768xAUTO 576xAUTO 320xAUTO 64xAUTO"
-const WHITELIST = Object.freeze(WHITELIST_STR.split(' '))
+const BUCKET = "qts-microservice-template"
+const URL = "http://qts-microservice-template.s3-website-ap-southeast-1.amazonaws.com"
 
 exports.handler = async (event) => {
     const path = event.queryStringParameters.path;
@@ -29,15 +26,6 @@ exports.handler = async (event) => {
 
     const sizes = sizeAndAction[0].split("x");
     const action = sizeAndAction.length > 1 ? sizeAndAction[1] : null;
-
-    // Whitelist validation.
-    if (false && WHITELIST && !WHITELIST.includes(resizeOption)) {
-        return {
-            statusCode: 400,
-            body: `WHITELIST is set but does not contain the size parameter "${resizeOption}"`,
-            headers: { "Content-Type": "text/plain" }
-        };
-    }
 
     // Action validation.
     if (action && action !== 'max' && action !== 'min') {
